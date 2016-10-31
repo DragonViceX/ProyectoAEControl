@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"> 
+
+    <body>
+
+        <ui:composition template="./../layouts/global.xhtml">           
+
+            <ui:define name="content">
+                <h1>Cliente</h1>
+                <h:form id="form"> 
+                     <p:messages autoUpdate="true"/>
+
+                    <p:growl id="growl" showDetail="true"/>
+                     <h:panelGrid id="grid" columns="3">
+
+                        <p:outputLabel for="idNit" value="Nit:"/>
+                        <p:inputText id="idNit" label="Nit" required="true" value="#{clienteBean.cliente.nit}"/>
+                        <p:message for="idNit"/>
+
+                        <p:outputLabel for="idEmpresa" value="Empresa:"/>
+                        <p:inputText id="idEmpresa" label="Empresa" required="true" value="#{clienteBean.cliente.empresa}"/>
+                        <p:message for="idEmpresa"/>
+
+                        <p:outputLabel for="idNombre" value="Nombre:"/>
+                        <p:inputText id="idNombre" label="Nombre" required="true" value="#{clienteBean.cliente.nombre}"/>
+                        <p:message for="idNombre"/>
+
+                        <p:outputLabel for="idApellidos" value="Apellidos:"/>
+                        <p:inputText id="idApellidos" label="Apellidos" required="true" value="#{clienteBean.cliente.apellidos}"/>
+                        <p:message for="idApellidos"/>
+
+                        <p:outputLabel for="idTelefono" value="Teléfono:"/>
+                        <p:inputText id="idTelefono" validatorMessage="Debe ser numérico" label="Telefono" required="true" value="#{clienteBean.cliente.telefono}">
+                            <f:validateRegex pattern="[0-9]+" />
+                        </p:inputText>
+                        <p:message for="idTelefono"/>                        
+
+                        <p:outputLabel for="idFax" value="Fax:"/>
+                        <p:inputText id="idFax" validatorMessage="Debe ser numérico" label="Fax" required="false" value="#{clienteBean.cliente.fax}">
+                            <f:validateRegex pattern="[0-9]+" />
+                        </p:inputText>
+                        <p:message for="idFax"/>
+
+                        <p:outputLabel for="idDireccion" value="Dirección:"/>
+                        <p:inputText id="idDireccion" label="Direccion" required="true" value="#{clienteBean.cliente.direccion}"/>
+                        <p:message for="idDireccion"/>
+
+                        <p:outputLabel for="idCorreo" value="Correo:"/>
+                        <p:inputText id="idCorreo" validatorMessage="Correo inválido" label="Correo" required="true" value="#{clienteBean.cliente.correo}">
+                            <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                        </p:inputText>
+                        <p:message for="idCorreo"/>
+
+                        <p:outputLabel for="idSitioWeb" value="Sitio Web:"/>
+                        <p:inputText id="idSitioWeb" label="SitioWeb" required="true" value="#{clienteBean.cliente.sitioWeb}"/>
+                        <p:message for="idSitioWeb"/>
+
+                        <p:commandButton id="btnEnviar" value="Guardar" actionListener="#{clienteBean.registrar}" validateClient="true" update="grid :formTable:dtCliente" />
+                    </h:panelGrid>
+                </h:form>  
+
+                <h:form id="formTable">
+                    <p:dataTable id="dtCliente" editable="true" var="cliente" widgetVar="clienteTabla" value="#{clienteBean.LCliente}" 
+                                 emptyMessage="No hay clientes con este criterio" 
+                                 filteredValue="#{clienteBean.filteredClientes}"
+                                 rows="10"
+                                 rowKey="#{cliente.idCliente}"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                                 
+                        
+                         <p:ajax event="rowEdit" listener="#{clienteBean.onRowEdit}"  update=":form:growl" />
+                        <p:ajax event="rowEditCancel" listener="#{clienteBean.onRowCancel}" update=":form:growl" />
+
+                        <f:facet name="header">
+                            <p:outputPanel >
+                                <h:outputText value="Buscar en todos los filtros:" />
+                                <p:inputText id="globalFilter" onkeyup="PF('clienteTabla').filter()" style="width:150px" placeholder=""/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column filterBy="#{cliente.nit}"  filterStyle="display:none;" headerText="Nit" >
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{cliente.nit}" /></f:facet>
+                                <f:facet name="input"><p:inputText id="modelInput" value="#{cliente.nit}" style="width:100%"/></f:facet>
+                            </p:cellEditor>                           
+                        </p:column>
+
+                        <p:column  filterStyle="display:none;" filterBy="#{cliente.empresa}" headerText="Empresa">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{cliente.empresa}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{cliente.empresa}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{cliente.nombre}"  filterStyle="display:none;" headerText="Nombre">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{cliente.nombre}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{cliente.nombre}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{cliente.apellidos}"  filterStyle="display:none;" headerText="Apellidos">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{cliente.apellidos}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{cliente.apellidos}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{cliente.telefono}"  filterStyle="display:none;" headerText="Teléfono">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{cliente.telefono}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:inputText  validatorMessage="Teléfono debe ser numérico" value="#{cliente.telefono}" style="width:100%">
+                                        <f:validateRegex pattern="[0-9]+" />
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{cliente.fax}"  filterStyle="display:none;" headerText="Fax">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{cliente.fax}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:inputText validatorMessage="Fax debe ser numérico" value="#{cliente.fax}" style="width:100%">
+                                        <f:validateRegex pattern="[0-9]+" />
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{cliente.direccion}"  filterStyle="display:none;" headerText="Dirección">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{cliente.direccion}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{cliente.direccion}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{cliente.correo}"  filterStyle="display:none;" headerText="Correo">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{cliente.correo}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:inputText id="correo"  value="#{cliente.correo}" validatorMessage="Correo inválido" style="width:100%">
+                                        <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                    </p:inputText>
+                                </f:facet>                               
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{cliente.sitioWeb}"  filterStyle="display:none;" headerText="Sitio web">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{cliente.sitioWeb}" /></f:facet>
+                                <f:facet name="input"><p:inputText  value="#{cliente.sitioWeb}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column style="width:10px">
+                            <p:rowEditor />
+                        </p:column>
+                        
+                        <p:column style="width:10px">                            
+                            <p:commandLink  actionListener="#{clienteBean.eliminar(cliente)}" update=":formTable:dtCliente" styleClass="ui-icon ui-icon-trash" >
+                                <p:confirm header="Confirmar" message="Esta seguro que desea eliminar este cliente #{cliente.apellidos}" icon="ui-icon-alert" />
+                            </p:commandLink>
+                        </p:column> 
+
+                    </p:dataTable>
+
+                     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">                                   
+                         <p:commandButton value="Si"  type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                </p:confirmDialog>
+
+                </h:form>
+
+                 
+
+
+            </ui:define>
+
+
+        </ui:composition>
+
+    </body>
+</html>

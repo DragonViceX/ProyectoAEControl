@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"> 
+
+    <body>
+
+        <ui:composition template="./../layouts/global.xhtml">           
+
+            <ui:define name="content">
+                <h1>Equipo</h1>
+                <h:form id="form"> 
+                    <p:messages autoUpdate="true"/>
+
+                    <h:panelGrid id="grid" columns="3" cellpadding="5">
+
+                        <p:outputLabel for="idNombre" value="Nombre:"/>
+                        <p:inputText id="idNombre" label="Nombre" required="true" value="#{equipoBean.equipo.nombre}"/>
+                        <p:message for="idNombre"/>
+
+                        <p:outputLabel for="idCodigo" value="Codigo:"/>
+                        <p:inputText id="idCodigo" label="Codigo"  value="#{equipoBean.equipo.codigo}"/>
+                        <p:message for="idCodigo"/>
+
+                        <p:outputLabel for="idCantidad" value="Cantidad:"/>
+                        <p:inputText id="idCantidad" label="Cantidad" required="true" value="#{equipoBean.equipo.cantidad}"/>
+                        <p:message for="idCantidad"/>
+
+                        <p:outputLabel for="idPrecio" value="Precio alquiler:"/>
+                        <p:inputText id="idPrecio" label="Precio" required="true" value="#{equipoBean.equipo.precioAlquiler}"/>
+                        <p:message for="idPrecio"/>
+
+                        <p:outputLabel for="idTipo" value="Tipo de Equipo:"/>
+                        <p:selectOneMenu id="idTipo" value="#{equipoBean.idtipo_equipo}" required="true" >
+                            <f:selectItem itemLabel="Selecccione un Tipo de Equipo" itemValue="" />
+                            <f:selectItems value="#{equipoBean.tipoequipo}" />
+                            <f:converter converterId="javax.faces.Integer"/>
+                        </p:selectOneMenu>
+                        <p:message for="idTipo"/>     
+
+                        <p:commandButton id="btnEnviar" value="Guardar" actionListener="#{equipoBean.registrar}" validateClient="true" update="grid :formTable:dtEquipo" />
+                    </h:panelGrid>
+                </h:form>  
+
+                <h:form id="formTable">
+                    <p:dataTable id="dtEquipo" editable="true" var="equipo" widgetVar="equipoTabla" value="#{equipoBean.LEquipo}"  
+                                 emptyMessage="No hay equipos con este criterio" 
+                                 filteredValue="#{equipoBean.filteredEquipos}"
+                                 rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+
+
+                        <p:ajax event="rowEdit" listener="#{equipoBean.onRowEdit}"  update=":form:grid" />
+                        <p:ajax event="rowEditCancel" listener="#{equipoBean.onRowCancel}" update=":form:grid" />
+
+                        <f:facet name="header">
+                            <p:outputPanel >
+                                <h:outputText value="Buscar en todos los filtros:" />
+                                <p:inputText id="globalFilter" onkeyup="PF('equipoTabla').filter()" style="width:150px" placeholder=""/>
+                            </p:outputPanel>
+                        </f:facet>
+
+
+
+                        <p:column  filterStyle="display:none;" filterBy="#{equipo.nombre}" headerText="Nombre">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{equipo.nombre}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{equipo.nombre}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{equipo.codigo}"  filterStyle="display:none;" headerText="Codigo">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{equipo.codigo}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{equipo.codigo}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{equipo.cantidad}"  filterStyle="display:none;" headerText="Cantidad">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{equipo.cantidad}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{equipo.cantidad}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        
+                        <p:column filterBy="#{equipo.cantidadStock}"  filterStyle="display:none;" headerText="Stock">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{equipo.cantidadStock}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{equipo.cantidadStock}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{equipo.precioAlquiler}"  filterStyle="display:none;" headerText="Precio alquiler">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{equipo.precioAlquiler}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{equipo.precioAlquiler}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column filterBy="#{equipoBean.seleccion(equipo.tipoequipo.id)}" filterStyle="display:none;" headerText="Tipo Equipo">      
+                             
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{equipoBean.seleccion(equipo.tipoequipo.id)}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu id="idTipo" value="#{equipoBean.idtipo_equipo}" required="true" >
+                                        <f:selectItems value="#{equipoBean.tipoequipo}" var="idtipo_equipo" itemLabel="#{idtipo_equipo.description}" />
+                                        <f:converter converterId="javax.faces.Integer"/>
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>                           
+                        </p:column>
+
+
+
+                        <p:column style="width:10px">
+                            <p:rowEditor />
+                        </p:column>
+
+                        <p:column style="width:10px">                            
+                            <p:commandLink  actionListener="#{equipoBean.eliminar(equipo)}" update=":formTable:dtEquipo" styleClass="ui-icon ui-icon-trash" >
+                                <p:confirm header="Confirmar" message="¿Esta seguro que desea eliminar este equipo?" icon="ui-icon-alert" />
+                            </p:commandLink>
+                        </p:column> 
+
+                    </p:dataTable>
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">                                   
+                        <p:commandButton value="Si"  type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
+
+                </h:form>
+
+
+
+
+
+
+            </ui:define>
+
+
+        </ui:composition>
+
+    </body>
+</html>

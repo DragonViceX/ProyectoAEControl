@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      >
+    <body>
+
+     
+        <ui:composition template="./../layouts/global.xhtml">           
+
+            <ui:define name="content">
+                <h1>Tipo de Equipo</h1>
+                <h:form id="form"> 
+                    <p:messages autoUpdate="true"/>
+
+                    <h:panelGrid id="grid" columns="4" cellpadding="5">
+
+                        
+                        <p:outputLabel for="idNombre" value="Nombre:"/>
+                        <p:inputText id="idNombre" label="Nombre" required="true" value="#{tipoEquipoBean.tipo_equipo.nombre}"/>
+                        <p:message for="idNombre"/>
+
+                        <p:commandButton id="btnEnviar" value="Guardar" actionListener="#{tipoEquipoBean.registrar}" validateClient="true" update="grid :formTable:dtTipoEquipo" />
+                    </h:panelGrid>
+                </h:form>  
+
+                <h:form id="formTable">
+                    <p:dataTable id="dtTipoEquipo" editable="true" var="tipoequipo" widgetVar="tipoequipoTabla" value="#{tipoEquipoBean.LTipoEquipo}"  
+                                 emptyMessage="No hay tipo de equipo con este criterio" 
+                                 filteredValue="#{tipoEquipoBean.filteredTipoE}"
+                                 rows="5"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+
+
+                        <p:ajax event="rowEdit" listener="#{tipoEquipoBean.onRowEdit}"  update=":form:grid" />
+                        <p:ajax event="rowEditCancel" listener="#{tipoEquipoBean.onRowCancel}" update=":form:grid" />
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="Buscar en todos los filtros:" />
+                                <p:inputText id="globalFilter" onkeyup="PF('tipoequipoTabla').filter()" style="width:150px" placeholder=""/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column  filterStyle="display:none;" filterBy="#{tipoequipo.id}" headerText="Identificador">
+                            
+                                <h:outputText value="#{tipoequipo.id}" />
+                               
+                            
+                        </p:column>
+                        
+                        <p:column  filterStyle="display:none;" filterBy="#{tipoequipo.nombre}" headerText="Nombre">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{tipoequipo.nombre}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{tipoequipo.nombre}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column style="width:50px">
+                            <p:rowEditor />
+                        </p:column>
+
+                        <p:column style="width:50px">                            
+                            <p:commandLink  actionListener="#{tipoEquipoBean.eliminar(tipoequipo)}" update=":formTable:dtTipoEquipo" styleClass="ui-icon ui-icon-trash" >
+                                <p:confirm header="Confirmar" message="¿Esta seguro que desea eliminarlo?" icon="ui-icon-alert" />
+                            </p:commandLink>
+                        </p:column> 
+
+                    </p:dataTable>
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">                                   
+                        <p:commandButton value="Si"  type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
+
+                </h:form>
+
+
+
+
+
+
+            </ui:define>
+
+
+        </ui:composition>
+
+    </body>
+</html>
+
+
